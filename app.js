@@ -22,6 +22,11 @@ const yScale = d3.scaleLinear().range([CHART_HEIGHT, 0]);
 xScale.domain(DUMMY_DATA.map(d => d.region));
 yScale.domain([0, d3.max(DUMMY_DATA, d => d.value) + 3]);
 
+chart.append('g')
+     .call(d3.axisBottom(xScale).tickSizeOuter(0))
+     .attr('transform', `translate(0, ${CHART_HEIGHT})`)
+     .attr('font-size', '1rem');
+
 const bars = chart.selectAll('.bar')
                   .data(DUMMY_DATA)
                   .enter()
