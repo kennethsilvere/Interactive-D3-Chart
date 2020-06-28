@@ -27,22 +27,62 @@ chart.append('g')
      .attr('transform', `translate(0, ${CHART_HEIGHT})`)
      .attr('font-size', '1rem');
 
-const bars = chart.selectAll('.bar')
-                  .data(DUMMY_DATA)
-                  .enter()
-                  .append('rect')
-                  .classed('bar', true)
-                  .attr('width', xScale.bandwidth())
-                  .attr('height', d => (CHART_HEIGHT - yScale(d.value)))
-                  .attr('x', d => xScale(d.region))
-                  .attr('y', d => yScale(d.value));
+let selectedItems = DUMMY_DATA;
+let unselectedItems = [];
 
-const labels = chart.selectAll('.label')
-                    .data(DUMMY_DATA)
-                    .enter()
-                    .append('text')
-                    .classed('label', true)
-                    .text(d => d.value)
-                    .attr('x', d => xScale(d.region) + (xScale.bandwidth() / 2))
-                    .attr('y', d => yScale(d.value) - 20)
-                    .attr('text-anchor', 'middle');
+const renderChart = () => {
+  const bars = chart.selectAll('.bar')
+    .data(selectedItems)
+    .enter()
+    .append('rect')
+    .classed('bar', true)
+    .attr('width', xScale.bandwidth())
+    .attr('height', d => (CHART_HEIGHT - yScale(d.value)))
+    .attr('x', d => xScale(d.region))
+    .attr('y', d => yScale(d.value));
+
+  const labels = chart.selectAll('.label')
+    .data(selectedItems)
+    .enter()
+    .append('text')
+    .classed('label', true)
+    .text(d => d.value)
+    .attr('x', d => xScale(d.region) + (xScale.bandwidth() / 2))
+    .attr('y', d => yScale(d.value) - 20)
+    .attr('text-anchor', 'middle');
+
+  chart.selectAll('.bar')
+    .data(selectedItems)
+    .exit()
+    .remove();
+
+  chart.selectAll('.label')
+    .data(selectedItems)
+    .exit()
+    .remove();
+}
+
+renderChart();
+
+const controls = d3.select('#data')
+                   .select('ul')
+                   .selectAll('li')
+                   .data(DUMMY_DATA)
+                   .enter()
+                   .append('li')
+                   .text(d => d.region)
+                   .append('input')
+                   .attr('type', 'checkbox')
+                   .attr('checked', true)
+                   .on('change', d => onCheck(d))
+
+
+const onCheck = (d) => {
+  if (unselectedItems.indexOf(d.region) === -1) {
+    unselectedItems.push(d.region);
+  } else {
+    unselectedItems = unselectedItems.filter(i => i !== d.region);
+  }
+  selectedItems = DUMMY_DATA.filter(item => unselectedItems.indexOf(item.region) === -1);   
+  renderChart();     
+}
