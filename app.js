@@ -32,7 +32,7 @@ let unselectedItems = [];
 
 const renderChart = () => {
   const bars = chart.selectAll('.bar')
-    .data(selectedItems)
+    .data(selectedItems, d => d.id)
     .enter()
     .append('rect')
     .classed('bar', true)
@@ -42,7 +42,7 @@ const renderChart = () => {
     .attr('y', d => yScale(d.value));
 
   const labels = chart.selectAll('.label')
-    .data(selectedItems)
+    .data(selectedItems, d => d.id)
     .enter()
     .append('text')
     .classed('label', true)
@@ -52,12 +52,12 @@ const renderChart = () => {
     .attr('text-anchor', 'middle');
 
   chart.selectAll('.bar')
-    .data(selectedItems)
+    .data(selectedItems, d => d.id)
     .exit()
     .remove();
 
   chart.selectAll('.label')
-    .data(selectedItems)
+    .data(selectedItems, d => d.id)
     .exit()
     .remove();
 }
