@@ -31,3 +31,13 @@ const bars = chart.selectAll('.bar')
                   .attr('height', d => (CHART_HEIGHT - yScale(d.value)))
                   .attr('x', d => xScale(d.region))
                   .attr('y', d => yScale(d.value));
+
+const labels = chart.selectAll('.label')
+                    .data(DUMMY_DATA)
+                    .enter()
+                    .append('text')
+                    .classed('label', true)
+                    .text(d => d.value)
+                    .attr('x', d => xScale(d.region) + (xScale.bandwidth() / 2))
+                    .attr('y', d => yScale(d.value) - 20)
+                    .attr('text-anchor', 'middle');
